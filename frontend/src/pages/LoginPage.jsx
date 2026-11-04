@@ -1,6 +1,6 @@
 // Author: Khôi Nguyên
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage({ onLogin, error }) {
   const navigate = useNavigate();
@@ -21,35 +21,90 @@ export default function LoginPage({ onLogin, error }) {
     }
   }
 
+  const fillQuick = (quickEmail, quickPassword) => {
+    setEmail(quickEmail);
+    setPassword(quickPassword);
+  };
+
   return (
-    <main className="login-page">
-      <header className="login-page-header">
-        <Link className="public-brand" to="/" aria-label="Quay lại trang tin tức">
-          <span className="public-brand-mark">FU</span>
-          <span className="public-brand-copy">
-            <strong>FU News Management</strong>
-            <small>Tin tức và thông báo mới nhất</small>
-          </span>
-        </Link>
-        <Link className="button-link secondary" to="/">← Tin tức công khai</Link>
-      </header>
-      <section className="login">
-        <form className="panel" onSubmit={submit}>
-          <p className="eyebrow">FUNewsManagementSystem</p>
-          <h1>Đăng nhập</h1>
-          <p>Đăng nhập bằng email và mật khẩu tài khoản đã được lưu trong SQL Server.</p>
-          <label>Email
-            <input autoComplete="username" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-          </label>
-          <label>Mật khẩu
-            <input autoComplete="current-password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-          </label>
-          {error && <p className="error" role="alert">{error}</p>}
-          <button type="submit" disabled={submitting}>{submitting ? 'Đang đăng nhập...' : 'Đăng nhập'}</button>
-          <small>Role 1: Admin · Role 2: Staff</small>
+    <div className="login-screen">
+      <div className="login-card-box">
+        <div className="login-brand-header">
+          <div className="login-brand-icon">FN</div>
+          <h1>FU News Management</h1>
+          <p>Hệ thống quản lý tin tức nội bộ</p>
+        </div>
+
+        <form className="login-form-body" onSubmit={submit}>
+          <div className="form-group">
+            <label htmlFor="login-email">Địa chỉ Email</label>
+            <div className="input-with-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              <input
+                id="login-email"
+                autoComplete="username"
+                type="email"
+                placeholder="Nhập email của bạn..."
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="login-password">Mật khẩu</label>
+            <div className="input-with-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <input
+                id="login-password"
+                autoComplete="current-password"
+                type="password"
+                placeholder="Nhập mật khẩu..."
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {error && <div className="login-error-alert" role="alert">{error}</div>}
+
+          <button type="submit" className="btn-login-submit" disabled={submitting}>
+            {submitting ? 'Đang xác thực...' : 'Đăng nhập vào hệ thống'}
+          </button>
+
+          <div className="login-quick-hints">
+            <span className="hints-title">Tài khoản thử nghiệm:</span>
+            <div className="hints-buttons">
+              <button
+                type="button"
+                className="btn-quick-fill admin-hint"
+                onClick={() => fillQuick('SteveParis@FUNewsManagement.org', '@1')}
+              >
+                👑 <strong>Admin</strong> (Steve Paris)
+              </button>
+              <button
+                type="button"
+                className="btn-quick-fill staff-hint"
+                onClick={() => fillQuick('EmmaWilliam@FUNewsManagement.org', '@1')}
+              >
+                ✍️ <strong>Staff</strong> (Emma William)
+              </button>
+            </div>
+          </div>
         </form>
-      </section>
-      <footer>FUNewsManagementSystem · Assignment 02 · Author: Khôi Nguyên</footer>
-    </main>
+
+        <footer className="login-card-footer">
+          <span>FUNewsManagementSystem · Assignment 02 · Author: <strong>Khôi Nguyên</strong></span>
+        </footer>
+      </div>
+    </div>
   );
 }
