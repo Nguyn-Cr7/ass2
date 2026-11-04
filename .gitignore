@@ -1,0 +1,26 @@
+# Maven
+target/
+**/target/
+*.class
+
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+**/dist/
+
+# IDE
+.idea/workspace.xml
+.idea/shelf/
+.idea/httpRequests/
+.idea/dataSources/
+.idea/dataSources.local.xml
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
