@@ -1,16 +1,18 @@
 // Author: Khôi Nguyên
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import RequireAuth from './components/RequireAuth';
 import RequireRole from './components/RequireRole';
 import LoginPage from './pages/LoginPage';
+import PublicHomePage from './pages/PublicHomePage';
 import NewsPage from './pages/NewsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import AccountsPage from './pages/AccountsPage';
 import HistoryPage from './pages/HistoryPage';
 import ProfilePage from './pages/ProfilePage';
 import authService from './services/authService';
+import newsService from './services/newsService';
 import errorMessage from './utils/errorMessage';
 
 export default function App() {
@@ -18,9 +20,35 @@ export default function App() {
   const [user, setUser] = useState(() => authService.getSession());
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
+  const [publicNews, setPublicNews] = useState([]);
+  const [publicNewsLoading, setPublicNewsLoading] = useState(true);
+  const [publicNewsError, setPublicNewsError] = useState('');
 
   const isAdmin = Number(user?.accountRole) === 1;
   const homePath = user ? (isAdmin ? '/accounts' : '/news') : '/login';
+
+  const loadPublicNews = useCallback(async () => {
+    setPublicNewsLoading(true);
+    setPublicNewsError('');
+    try {
+      const result = await newsService.getPublic();
+      if (!Array.isArray(result)) {
+        setPublicNews([]);
+        setPublicNewsError('Phản hồi không hợp lệ từ máy chủ.');
+        return;
+      }
+      setPublicNews(result);
+    } catch (loadError) {
+      setPublicNews([]);
+      setPublicNewsError(errorMessage(loadError, 'Không thể tải tin tức công khai từ API.'));
+    } finally {
+      setPublicNewsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPublicNews();
+  }, [loadPublicNews]);
 
   const handleLogin = useCallback(async (credentials) => {
     setError('');
@@ -29,19 +57,20 @@ export default function App() {
       authService.saveSession(loggedInUser);
       setUser(loggedInUser);
       setSearch('');
+      await loadPublicNews();
       return loggedInUser;
     } catch (loginError) {
       setError(errorMessage(loginError, 'Không thể đăng nhập. Vui lòng kiểm tra email và mật khẩu.'));
       return null;
     }
-  }, []);
+  }, [loadPublicNews]);
 
   const handleLogout = useCallback(() => {
     authService.clearSession();
     setUser(null);
     setSearch('');
     setError('');
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   }, [navigate]);
 
   const saveProfile = useCallback(async (payload) => {
@@ -62,13 +91,22 @@ export default function App() {
     <Routes>
       <Route
         path="/"
-        element={<Navigate to={user ? homePath : '/login'} replace />}
+        element={
+          <PublicHomePage
+            user={user}
+            homePath={isAdmin ? '/accounts' : '/news'}
+            publicNews={publicNews}
+            publicNewsLoading={publicNewsLoading}
+            publicNewsError={publicNewsError}
+            onRetryPublicNews={loadPublicNews}
+          />
+        }
       />
 
       <Route
         path="/login"
         element={user
-          ? <Navigate to={homePath} replace />
+          ? <Navigate to={isAdmin ? '/accounts' : '/news'} replace />
           : <LoginPage onLogin={handleLogin} error={error} />}
       />
 

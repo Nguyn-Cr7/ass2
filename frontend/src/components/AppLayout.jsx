@@ -1,6 +1,6 @@
 // Author: Khôi Nguyên
 import React, { useEffect } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import ErrorAlert from './ErrorAlert';
 import SearchToolbar from './SearchToolbar';
 
@@ -39,13 +39,13 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
     <div className="dashboard-container">
       {/* SIDEBAR BÊN TRÁI */}
       <aside className="dashboard-sidebar">
-        <div className="sidebar-brand">
+        <Link to="/" className="sidebar-brand" style={{ textDecoration: 'none' }} title="Quay lại trang chủ tin tức">
           <div className="brand-logo-badge">FN</div>
           <div className="brand-text">
             <h2>FUNews</h2>
             <span>Management System</span>
           </div>
-        </div>
+        </Link>
 
         <div className="sidebar-user-card">
           <div className="user-avatar">
@@ -105,7 +105,15 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
             )}
 
             <div className="sidebar-divider" />
-            <span className="sidebar-section-title">CÁ NHÂN</span>
+            <span className="sidebar-section-title">HỆ THỐNG & CÁ NHÂN</span>
+
+            <NavLink to="/" className="sidebar-link">
+              <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              <span>Xem trang chủ tin tức</span>
+            </NavLink>
 
             <NavLink to="/profile" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

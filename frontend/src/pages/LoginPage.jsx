@@ -1,6 +1,6 @@
 // Author: Khôi Nguyên
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginPage({ onLogin, error }) {
   const navigate = useNavigate();
@@ -28,6 +28,17 @@ export default function LoginPage({ onLogin, error }) {
 
   return (
     <div className="login-screen">
+      {/* NÚT QUAY LẠI TRANG CHỦ */}
+      <div className="login-top-bar">
+        <Link to="/" className="btn-back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Về trang chủ</span>
+        </Link>
+      </div>
+
       <div className="login-card-box">
         <div className="login-brand-header">
           <div className="login-brand-icon">FN</div>
