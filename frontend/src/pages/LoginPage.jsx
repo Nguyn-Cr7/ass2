@@ -110,9 +110,9 @@ export default function LoginPage({ onLogin, error }) {
               <button
                 type="button"
                 className="btn-quick-fill admin-hint"
-                onClick={() => fillQuick('SteveParis@FUNewsManagement.org', '@1')}
+                onClick={() => fillQuick('Admin@gmail.com', '123456')}
               >
-                👑 <strong>Admin</strong> (Steve Paris)
+                👑 <strong>Admin</strong> (Khôi Nguyên)
               </button>
               <button
                 type="button"
