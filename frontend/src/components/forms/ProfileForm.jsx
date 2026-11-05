@@ -1,11 +1,15 @@
 // Author: Khôi Nguyên
 import React, { useState } from 'react';
 
+/**
+ * Form cập nhật thông tin hồ sơ cá nhân của người dùng đang đăng nhập.
+ */
 export default function ProfileForm({ user, onSubmit, onCancel, saving = false }) {
   const [accountName, setAccountName] = useState(user?.accountName || '');
   const [accountEmail, setAccountEmail] = useState(user?.accountEmail || '');
   const [newPassword, setNewPassword] = useState('');
 
+  // Xử lý gửi thông tin cập nhật
   function submit(event) {
     event.preventDefault();
     const payload = {
@@ -14,7 +18,7 @@ export default function ProfileForm({ user, onSubmit, onCancel, saving = false }
       accountEmail: accountEmail.trim(),
       accountRole: Number(user.accountRole),
     };
-    // Backend hiện tại lưu trực tiếp entity; gửi lại mật khẩu cũ khi người dùng không thay đổi mật khẩu.
+    // Giữ nguyên mật khẩu cũ nếu người dùng không nhập mật khẩu mới
     if (newPassword) payload.accountPassword = newPassword;
     else if (user.accountPassword) payload.accountPassword = user.accountPassword;
     onSubmit(payload);
@@ -28,7 +32,7 @@ export default function ProfileForm({ user, onSubmit, onCancel, saving = false }
       <label>Email *
         <input type="email" required maxLength={70} value={accountEmail} onChange={(e) => setAccountEmail(e.target.value)} />
       </label>
-      <label>Mật khẩu mới (không bắt buộc)
+      <label>Mật khẩu mới (để trống nếu không đổi)
         <input type="password" maxLength={70} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
       </label>
       <div className="modalactions">

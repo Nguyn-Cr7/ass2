@@ -3,6 +3,11 @@ import React, { useState, useMemo } from 'react';
 import PublicHeader from '../components/PublicHeader';
 import NewsCard from '../components/NewsCard';
 
+/**
+ * PublicHomePage: Trang chủ tin tức công khai dành cho tất cả mọi người xem bài viết
+ * - Không yêu cầu đăng nhập
+ * - Hỗ trợ tìm kiếm theo từ khóa trực tiếp và lọc theo danh mục bài viết
+ */
 export default function PublicHomePage({
   user = null,
   homePath = '/news',
@@ -14,7 +19,7 @@ export default function PublicHomePage({
   const [keyword, setKeyword] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
-  // Lấy danh sách các danh mục duy nhất từ publicNews
+  // Trích xuất danh sách các danh mục duy nhất từ các bài viết công khai
   const categories = useMemo(() => {
     const map = new Map();
     publicNews.forEach((item) => {
@@ -25,7 +30,7 @@ export default function PublicHomePage({
     return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
   }, [publicNews]);
 
-  // Lọc tin tức theo từ khóa và danh mục
+  // Lọc bài viết công khai theo từ khóa tìm kiếm và danh mục được chọn
   const filteredNews = useMemo(() => {
     return publicNews.filter((item) => {
       const matchKeyword = !keyword.trim() || 
@@ -42,9 +47,10 @@ export default function PublicHomePage({
 
   return (
     <div className="homepage-wrapper">
+      {/* Header công khai với nút Đăng nhập / Bảng điều khiển */}
       <PublicHeader user={user} homePath={homePath} />
 
-      {/* HERO BANNER */}
+      {/* HERO BANNER: Lời chào và ô tìm kiếm nổi bật */}
       <section className="homepage-hero">
         <div className="hero-content">
           <span className="hero-eyebrow">FUNews Management System</span>
@@ -71,9 +77,9 @@ export default function PublicHomePage({
         </div>
       </section>
 
-      {/* DANH SÁCH BÀI VIẾT */}
+      {/* DANH SÁCH BÀI VIẾT VÀ BỘ LỌC */}
       <main className="homepage-main-container">
-        {/* BỘ LỌC DANH MỤC */}
+        {/* Bộ nút lọc nhanh theo danh mục bài viết */}
         {categories.length > 0 && (
           <div className="category-filter-pills">
             <button
@@ -96,7 +102,7 @@ export default function PublicHomePage({
           </div>
         )}
 
-        {/* TRẠNG THÁI TẢI VÀ LỖI */}
+        {/* Trạng thái tải, báo lỗi hoặc hiển thị lưới bài viết qua NewsCard */}
         {publicNewsLoading ? (
           <div className="homepage-empty-box">
             <div className="loading-spinner"></div>
@@ -123,6 +129,7 @@ export default function PublicHomePage({
         )}
       </main>
 
+      {/* Chân trang công khai */}
       <footer className="homepage-footer">
         <p>FUNewsManagementSystem · Assignment 02 · Author: <strong>Khôi Nguyên</strong></p>
       </footer>

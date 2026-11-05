@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import './style.css';
 
+// Khởi tạo ứng dụng React và bọc BrowserRouter để quản lý định tuyến (Routing)
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>

@@ -1,11 +1,17 @@
 // Author: Khôi Nguyên
 import React, { useEffect, useState } from 'react';
 
+// Cấu trúc mặc định cho form tạo tài khoản mới
 const EMPTY_ACCOUNT = { accountName: '', accountEmail: '', accountRole: 2, accountPassword: '' };
 
+/**
+ * Form nhập liệu tạo mới hoặc cập nhật thông tin tài khoản.
+ */
 export default function AccountForm({ initialValue, onSubmit, onCancel, saving = false }) {
   const [form, setForm] = useState(EMPTY_ACCOUNT);
   const isEditing = Boolean(initialValue?.accountId);
+
+  // Điền dữ liệu cũ vào form nếu đang ở chế độ chỉnh sửa
   useEffect(() => {
     setForm(initialValue ? {
       accountName: initialValue.accountName || '',
@@ -15,7 +21,12 @@ export default function AccountForm({ initialValue, onSubmit, onCancel, saving =
     } : EMPTY_ACCOUNT);
   }, [initialValue]);
 
-  function update(name, value) { setForm((current) => ({ ...current, [name]: value })); }
+  // Cập nhật giá trị từng trường trong form
+  function update(name, value) {
+    setForm((current) => ({ ...current, [name]: value }));
+  }
+
+  // Xử lý khi nhấn nút Lưu tài khoản
   function submit(event) {
     event.preventDefault();
     const payload = {
@@ -23,6 +34,7 @@ export default function AccountForm({ initialValue, onSubmit, onCancel, saving =
       accountEmail: form.accountEmail.trim(),
       accountRole: Number(form.accountRole),
     };
+    // Giữ nguyên mật khẩu cũ nếu người dùng không nhập mật khẩu mới khi sửa
     if (form.accountPassword) payload.accountPassword = form.accountPassword;
     else if (initialValue?.accountPassword) payload.accountPassword = initialValue.accountPassword;
     onSubmit(payload);

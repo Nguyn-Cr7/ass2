@@ -2,6 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * AppHeader: Header hiển thị thông tin chào người dùng, vai trò và nút đăng xuất
+ */
 export default function AppHeader({ user, onLogout }) {
   const isAdmin = Number(user?.accountRole) === 1;
   return (

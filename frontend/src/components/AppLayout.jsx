@@ -4,18 +4,26 @@ import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import ErrorAlert from './ErrorAlert';
 import SearchToolbar from './SearchToolbar';
 
+// Danh sách các route hiển thị thanh tìm kiếm trên thanh tiêu đề Topbar
 const SEARCH_PATHS = ['/news', '/categories', '/accounts', '/history'];
 
+/**
+ * AppLayout: Layout khung chính cho khu vực quản trị (Dashboard)
+ * Bao gồm Sidebar điều hướng phân quyền bên trái, Topbar và vùng nội dung Outlet bên phải.
+ */
 export default function AppLayout({ user, onLogout, error, setError, search, setSearch }) {
   const location = useLocation();
   const showSearch = SEARCH_PATHS.includes(location.pathname);
+  // Kiểm tra vai trò: role 1 là Admin, role 2 là Staff
   const isAdmin = Number(user?.accountRole) === 1;
 
+  // Tự động xóa từ khóa tìm kiếm và thông báo lỗi cũ khi chuyển trang
   useEffect(() => {
     setSearch('');
     setError('');
   }, [location.pathname, setSearch, setError]);
 
+  // Trả về tiêu đề và mô tả tương ứng theo từng trang đang xem
   const getPageInfo = () => {
     switch (location.pathname) {
       case '/accounts':
@@ -37,8 +45,9 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
 
   return (
     <div className="dashboard-container">
-      {/* SIDEBAR BÊN TRÁI */}
+      {/* SIDEBAR BÊN TRÁI: Logo, thông tin người dùng, danh sách menu theo quyền */}
       <aside className="dashboard-sidebar">
+        {/* Logo hệ thống, bấm vào để quay về trang chủ công khai */}
         <Link to="/" className="sidebar-brand" style={{ textDecoration: 'none' }} title="Quay lại trang chủ tin tức">
           <div className="brand-logo-badge">FN</div>
           <div className="brand-text">
@@ -47,6 +56,7 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
           </div>
         </Link>
 
+        {/* Khối hiển thị thông tin và vai trò của user đang đăng nhập */}
         <div className="sidebar-user-card">
           <div className="user-avatar">
             {(user?.accountName || user?.accountEmail || 'U')[0].toUpperCase()}
@@ -59,6 +69,7 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
           </div>
         </div>
 
+        {/* Menu điều hướng chính: Admin xem Tài khoản & Tin tức; Staff xem Tin tức, Danh mục & Lịch sử */}
         <div className="sidebar-menu-section">
           <span className="sidebar-section-title">MENU CHÍNH</span>
           <nav className="sidebar-nav">
@@ -107,6 +118,7 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
             <div className="sidebar-divider" />
             <span className="sidebar-section-title">HỆ THỐNG & CÁ NHÂN</span>
 
+            {/* Điều hướng ra trang công khai và trang hồ sơ cá nhân */}
             <NavLink to="/" className="sidebar-link">
               <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -125,6 +137,7 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
           </nav>
         </div>
 
+        {/* Nút đăng xuất ở chân Sidebar */}
         <div className="sidebar-footer">
           <button type="button" className="btn-logout" onClick={onLogout}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
@@ -140,9 +153,9 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
         </div>
       </aside>
 
-      {/* KHU VỰC CHÍNH */}
+      {/* KHU VỰC NỘI DUNG CHÍNH BÊN PHẢI */}
       <div className="dashboard-main">
-        {/* TOPBAR */}
+        {/* TOPBAR: Tiêu đề trang, thanh tìm kiếm nhanh và thông tin tài khoản */}
         <header className="dashboard-topbar">
           <div className="topbar-title-wrap">
             <h1 className="page-heading-title">{pageInfo.title}</h1>
@@ -166,7 +179,7 @@ export default function AppLayout({ user, onLogout, error, setError, search, set
           </div>
         </header>
 
-        {/* NỘI DUNG TRANG */}
+        {/* VÙNG HIỂN THỊ NỘI DUNG: Báo lỗi toàn cục và trang con (Outlet) */}
         <main className="dashboard-content">
           <ErrorAlert message={error} onClose={() => setError('')} />
           <Outlet />

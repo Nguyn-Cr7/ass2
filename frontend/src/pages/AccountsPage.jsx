@@ -5,6 +5,9 @@ import errorMessage from '../utils/errorMessage';
 import Modal from '../components/Modal';
 import AccountForm from '../components/forms/AccountForm';
 
+/**
+ * Màn hình quản lý danh sách tài khoản hệ thống (dành cho Admin).
+ */
 export default function AccountsPage({ search, onError }) {
   const [accounts, setAccounts] = useState([]);
   const [editing, setEditing] = useState(null);
@@ -13,6 +16,7 @@ export default function AccountsPage({ search, onError }) {
   const [saving, setSaving] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
+  // Tải danh sách tài khoản mỗi khi từ khóa tìm kiếm hoặc reloadKey thay đổi
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -23,6 +27,7 @@ export default function AccountsPage({ search, onError }) {
     return () => { active = false; };
   }, [search, reloadKey, onError]);
 
+  // Xử lý tạo mới hoặc cập nhật tài khoản
   async function save(payload) {
     setSaving(true);
     onError('');
@@ -38,6 +43,7 @@ export default function AccountsPage({ search, onError }) {
     }
   }
 
+  // Xử lý xóa tài khoản (ràng buộc: không xóa tài khoản đã tạo bài viết)
   async function remove(account) {
     if (!window.confirm(`Bạn có chắc muốn xóa tài khoản “${account.accountEmail}”?`)) return;
     try {
@@ -51,30 +57,65 @@ export default function AccountsPage({ search, onError }) {
   return (
     <section className="page-section">
       <div className="section-heading">
-        <div><p className="eyebrow">Người dùng hệ thống</p><h2>Quản lý tài khoản</h2><span>{accounts.length} tài khoản</span></div>
-        <button type="button" onClick={() => { setEditing(null); setModalOpen(true); }}>+ Thêm tài khoản</button>
+        <div>
+          <p className="eyebrow">Người dùng hệ thống</p>
+          <h2>Quản lý tài khoản</h2>
+          <span>{accounts.length} tài khoản</span>
+        </div>
+        <button type="button" onClick={() => { setEditing(null); setModalOpen(true); }}>
+          + Thêm tài khoản
+        </button>
       </div>
-      {loading ? <p className="empty">Đang tải tài khoản...</p> : (
+
+      {loading ? (
+        <p className="empty">Đang tải tài khoản...</p>
+      ) : (
         <div className="tablewrap">
           <table>
-            <thead><tr><th>ID</th><th>Họ tên</th><th>Email</th><th>Vai trò</th><th>Thao tác</th></tr></thead>
-            <tbody>{accounts.map((account) => (
-              <tr key={account.accountId}>
-                <td>{account.accountId}</td><td>{account.accountName || '—'}</td><td>{account.accountEmail}</td>
-                <td><span className={`role-pill ${Number(account.accountRole) === 1 ? 'admin' : ''}`}>{Number(account.accountRole) === 1 ? 'Admin' : 'Staff'}</span></td>
-                <td className="table-actions">
-                  <button type="button" className="secondary" onClick={() => { setEditing(account); setModalOpen(true); }}>Sửa</button>
-                  <button type="button" className="danger" onClick={() => remove(account)}>Xóa</button>
-                </td>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Vai trò</th>
+                <th>Thao tác</th>
               </tr>
-            ))}</tbody>
+            </thead>
+            <tbody>
+              {accounts.map((account) => (
+                <tr key={account.accountId}>
+                  <td>{account.accountId}</td>
+                  <td>{account.accountName || '—'}</td>
+                  <td>{account.accountEmail}</td>
+                  <td>
+                    <span className={`role-pill ${Number(account.accountRole) === 1 ? 'admin' : ''}`}>
+                      {Number(account.accountRole) === 1 ? 'Admin' : 'Staff'}
+                    </span>
+                  </td>
+                  <td className="table-actions">
+                    <button type="button" className="secondary" onClick={() => { setEditing(account); setModalOpen(true); }}>
+                      Sửa
+                    </button>
+                    <button type="button" className="danger" onClick={() => remove(account)}>
+                      Xóa
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
-          {!accounts.length && <p className="empty">Không tìm thấy tài khoản phù hợp.</p>}
         </div>
       )}
+
+      {/* Modal form thêm mới / chỉnh sửa tài khoản */}
       {modalOpen && (
-        <Modal title={`${editing ? 'Cập nhật' : 'Thêm'} tài khoản`} onClose={() => setModalOpen(false)}>
-          <AccountForm initialValue={editing} onSubmit={save} onCancel={() => setModalOpen(false)} saving={saving} />
+        <Modal title={editing ? 'Chỉnh sửa tài khoản' : 'Thêm tài khoản'} onClose={() => setModalOpen(false)}>
+          <AccountForm
+            initialValue={editing}
+            onSubmit={save}
+            onCancel={() => setModalOpen(false)}
+            saving={saving}
+          />
         </Modal>
       )}
     </section>

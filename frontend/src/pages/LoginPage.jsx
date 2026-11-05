@@ -2,17 +2,25 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+/**
+ * LoginPage: Màn hình đăng nhập hệ thống
+ * - Xác thực email & password qua authService
+ * - Tự động điều hướng theo vai trò (Admin -> /accounts, Staff -> /news)
+ * - Cung cấp nút điền nhanh tài khoản mẫu phục vụ kiểm thử và chấm bài
+ */
 export default function LoginPage({ onLogin, error }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  // Xử lý gửi form đăng nhập
   async function submit(event) {
     event.preventDefault();
     setSubmitting(true);
     try {
       const loggedInUser = await onLogin({ email: email.trim(), password });
+      // Điều hướng tới trang tương ứng: Role 1 -> Quản lý tài khoản, Role 2 -> Quản lý tin tức
       if (loggedInUser) {
         navigate(Number(loggedInUser.accountRole) === 1 ? '/accounts' : '/news', { replace: true });
       }
@@ -21,6 +29,7 @@ export default function LoginPage({ onLogin, error }) {
     }
   }
 
+  // Điền nhanh thông tin tài khoản mẫu vào ô nhập liệu
   const fillQuick = (quickEmail, quickPassword) => {
     setEmail(quickEmail);
     setPassword(quickPassword);
@@ -28,7 +37,7 @@ export default function LoginPage({ onLogin, error }) {
 
   return (
     <div className="login-screen">
-      {/* NÚT QUAY LẠI TRANG CHỦ */}
+      {/* Nút quay lại trang chủ tin tức công khai */}
       <div className="login-top-bar">
         <Link to="/" className="btn-back-home">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
@@ -40,12 +49,14 @@ export default function LoginPage({ onLogin, error }) {
       </div>
 
       <div className="login-card-box">
+        {/* Tiêu đề và biểu tượng nhận diện hệ thống */}
         <div className="login-brand-header">
           <div className="login-brand-icon">FN</div>
           <h1>FU News Management</h1>
           <p>Hệ thống quản lý tin tức nội bộ</p>
         </div>
 
+        {/* Biểu mẫu đăng nhập */}
         <form className="login-form-body" onSubmit={submit}>
           <div className="form-group">
             <label htmlFor="login-email">Địa chỉ Email</label>
@@ -85,12 +96,14 @@ export default function LoginPage({ onLogin, error }) {
             </div>
           </div>
 
+          {/* Hiển thị lỗi đăng nhập nếu có */}
           {error && <div className="login-error-alert" role="alert">{error}</div>}
 
           <button type="submit" className="btn-login-submit" disabled={submitting}>
             {submitting ? 'Đang xác thực...' : 'Đăng nhập vào hệ thống'}
           </button>
 
+          {/* Các nút bấm điền nhanh tài khoản thử nghiệm */}
           <div className="login-quick-hints">
             <span className="hints-title">Tài khoản thử nghiệm:</span>
             <div className="hints-buttons">
@@ -112,6 +125,7 @@ export default function LoginPage({ onLogin, error }) {
           </div>
         </form>
 
+        {/* Chân trang ghi rõ tác giả */}
         <footer className="login-card-footer">
           <span>FUNewsManagementSystem · Assignment 02 · Author: <strong>Khôi Nguyên</strong></span>
         </footer>

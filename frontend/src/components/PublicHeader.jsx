@@ -2,10 +2,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * PublicHeader: Thanh điều hướng (Navbar) trên trang chủ tin tức công khai
+ * - Hiển thị logo FUNews dẫn về trang chủ
+ * - Nếu đã đăng nhập: Hiển thị nút "Vào bảng điều khiển" dẫn về trang quản trị tương ứng vai trò
+ * - Nếu chưa đăng nhập: Hiển thị nút "Đăng nhập hệ thống" dẫn đến /login
+ */
 export default function PublicHeader({ user = null, homePath = '/news' }) {
   return (
     <header className="public-navbar">
       <div className="navbar-container">
+        {/* Logo và thương hiệu FUNews */}
         <Link className="navbar-brand" to="/" aria-label="FUNews - Trang chủ">
           <div className="brand-logo-badge">FN</div>
           <div className="brand-text">
@@ -14,6 +21,7 @@ export default function PublicHeader({ user = null, homePath = '/news' }) {
           </div>
         </Link>
 
+        {/* Nút hành động: chuyển sang Dashboard nếu đã login, ngược lại vào Login */}
         <div className="navbar-actions">
           {user ? (
             <Link className="btn-navbar-login" to={homePath}>

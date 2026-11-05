@@ -1,6 +1,11 @@
 // Author: Khôi Nguyên
 import React from 'react';
 
+/**
+ * SearchToolbar: Thanh tìm kiếm dùng chung kèm nút Thêm mới (nếu có quyền)
+ * - value, onChange: Quản lý từ khóa tìm kiếm
+ * - canCreate, onCreate, createLabel: Điều kiện hiển thị và xử lý khi click nút thêm mới
+ */
 export default function SearchToolbar({ value, onChange, onCreate, canCreate = false, createLabel = '+ Thêm mới' }) {
   return (
     <div className="search-bar-box">
@@ -9,6 +14,7 @@ export default function SearchToolbar({ value, onChange, onCreate, canCreate = f
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
+        {/* Ô nhập từ khóa tìm kiếm */}
         <input
           aria-label="Tìm kiếm"
           type="text"
@@ -17,6 +23,7 @@ export default function SearchToolbar({ value, onChange, onCreate, canCreate = f
           onChange={(event) => onChange(event.target.value)}
         />
       </div>
+      {/* Nút thêm mới hiển thị tùy theo trang và quyền của người dùng */}
       {canCreate && (
         <button type="button" className="btn-primary" onClick={onCreate}>
           {createLabel}
