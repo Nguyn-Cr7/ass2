@@ -7,6 +7,9 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Thực thể ánh xạ bảng NewsArticle (Bài viết tin tức) trong cơ sở dữ liệu.
+ */
 @Entity
 @Table(name = "NewsArticle")
 public class NewsArticle {
@@ -14,34 +17,50 @@ public class NewsArticle {
     @Size(max = 20)
     @Column(name = "NewsArticleID", length = 20)
     private String newsArticleId;
+
     @Size(max = 400)
     @Column(name = "NewsTitle", length = 400)
     private String newsTitle;
+
     @NotBlank
     @Size(max = 150)
     @Column(name = "Headline", length = 150, nullable = false)
     private String headline;
+
     @Column(name = "CreatedDate")
     private LocalDateTime createdDate;
+
     @Size(max = 4000)
     @Column(name = "NewsContent", length = 4000)
     private String newsContent;
+
     @Size(max = 400)
     @Column(name = "NewsSource", length = 400)
     private String newsSource;
+
+    // Quan hệ nhiều bài viết thuộc 1 danh mục
     @ManyToOne
     @JoinColumn(name = "CategoryID")
     private Category category;
+
+    // Trạng thái bài viết (true = Active/Công khai, false = Ẩn)
     @Column(name = "NewsStatus")
     private Boolean newsStatus;
+
+    // Người tạo bài viết
     @ManyToOne
     @JoinColumn(name = "CreatedByID")
     private SystemAccount createdBy;
+
+    // Người cập nhật bài viết lần cuối
     @ManyToOne
     @JoinColumn(name = "UpdatedByID")
     private SystemAccount updatedBy;
+
     @Column(name = "ModifiedDate")
     private LocalDateTime modifiedDate;
+
+    // Quan hệ nhiều - nhiều giữa Bài viết và Thẻ Tag thông qua bảng trung gian NewsTag
     @ManyToMany
     @JoinTable(name = "NewsTag", joinColumns = @JoinColumn(name = "NewsArticleID"), inverseJoinColumns = @JoinColumn(name = "TagID"))
     private Set<Tag> tags = new LinkedHashSet<>();

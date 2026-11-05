@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * Service xử lý các nghiệp vụ logic liên quan đến tài khoản (SystemAccount).
+ */
 @Service
 public class AccountService {
     private final AccountRepository repo;
@@ -17,16 +20,18 @@ public class AccountService {
         this.news = news;
     }
 
+    // Lấy toàn bộ tài khoản hoặc tìm kiếm theo từ khóa
     public List<SystemAccount> all(String q) {
         return q == null || q.isBlank() ? repo.findAll() : repo.search(q);
     }
 
+    // Lấy chi tiết tài khoản theo ID
     public SystemAccount get(short id) {
         return repo.findById(id).orElseThrow(() -> new NoSuchElementException("Không tìm thấy account"));
     }
 
+    // Thêm mới hoặc cập nhật tài khoản (tự sinh AccountID nếu chưa có vì DB không tự tăng)
     public SystemAccount save(SystemAccount a) {
-        // AccountID in the assignment SQL is not IDENTITY, so generate it on the server.
         if (a.getAccountId() == null || a.getAccountId() <= 0) {
             int next = repo.findAll().stream().map(SystemAccount::getAccountId).filter(Objects::nonNull)
                     .mapToInt(Short::intValue).max().orElse(0) + 1;
@@ -37,10 +42,14 @@ public class AccountService {
         return repo.save(a);
     }
 
+    // Xác thực thông tin đăng nhập theo email và mật khẩu
     public SystemAccount login(String email, String password) {
-        return repo.findByAccountEmailIgnoreCase(email).filter(a -> Objects.equals(a.getAccountPassword(), password)).orElseThrow(() -> new IllegalArgumentException("Email hoặc mật khẩu không đúng"));
+        return repo.findByAccountEmailIgnoreCase(email)
+                .filter(a -> Objects.equals(a.getAccountPassword(), password))
+                .orElseThrow(() -> new IllegalArgumentException("Email hoặc mật khẩu không đúng"));
     }
 
+    // Xóa tài khoản (ràng buộc: không được xóa tài khoản đã từng tạo bài viết)
     public void delete(short id) {
         if (news.existsByCreatedBy_AccountId(id))
             throw new IllegalStateException("Không thể xóa account đã tạo bài viết.");

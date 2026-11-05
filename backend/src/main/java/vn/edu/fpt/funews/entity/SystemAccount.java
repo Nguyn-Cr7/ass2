@@ -4,21 +4,29 @@ package vn.edu.fpt.funews.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+/**
+ * Thực thể ánh xạ bảng SystemAccount (Tài khoản người dùng trong hệ thống).
+ */
 @Entity
 @Table(name = "SystemAccount")
 public class SystemAccount {
     @Id
     @Column(name = "AccountID")
     private Short accountId;
+
     @Size(max = 100)
     @Column(name = "AccountName", length = 100)
     private String accountName;
+
     @Email
     @Size(max = 70)
     @Column(name = "AccountEmail", length = 70)
     private String accountEmail;
+
+    // Phân quyền vai trò: 1 = Admin, 2 = Staff
     @Column(name = "AccountRole")
     private Integer accountRole;
+
     @Size(max = 70)
     @Column(name = "AccountPassword", length = 70)
     private String accountPassword;

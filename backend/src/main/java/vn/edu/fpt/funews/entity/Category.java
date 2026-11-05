@@ -4,6 +4,9 @@ package vn.edu.fpt.funews.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+/**
+ * Thực thể ánh xạ bảng Category trong cơ sở dữ liệu.
+ */
 @Entity
 @Table(name = "Category")
 public class Category {
@@ -11,16 +14,22 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CategoryID")
     private Short categoryId;
+
     @NotBlank
     @Size(max = 100)
     @Column(name = "CategoryName", length = 100, nullable = false)
     private String categoryName;
+
     @NotBlank
     @Size(max = 250)
     @Column(name = "CategoryDesciption", length = 250, nullable = false)
     private String categoryDescription;
+
+    // ID danh mục cha (phục vụ cấu trúc phân cấp danh mục)
     @Column(name = "ParentCategoryID")
     private Short parentCategoryId;
+
+    // Trạng thái kích hoạt (true = Active, false = Inactive)
     @Column(name = "IsActive")
     private Boolean active;
 

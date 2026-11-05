@@ -40,3 +40,4 @@ export default function PublicHeader({ user = null, homePath = '/news' }) {
     </header>
   );
 }
+
